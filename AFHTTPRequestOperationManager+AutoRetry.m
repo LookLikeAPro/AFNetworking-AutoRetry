@@ -78,6 +78,7 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
             NSLog(@"AutoRetry: done.");
         }
 	};
+	__block BOOL failed = NO;
     NSMutableDictionary *operationDict = self.operationsDict[request];
     if (!operationDict) {
         operationDict = [NSMutableDictionary new];
@@ -102,12 +103,15 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
 																			  success(operation, responseObj);
 																			  NSLog(@"AutoRetry: done.");
 																		  }
-																	  } failure:retryBlock];
+																	  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+																		  failed = YES;
+																		  retryBlock(operation, error);
+																	  }];
 	if (timeOutInSeconds > 0) {
 		dispatch_time_t timeOut = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (timeOutInSeconds * NSEC_PER_SEC));
 		dispatch_after(timeOut, dispatch_get_main_queue(), ^{
 			int succeed  = [operationDict[@"operationSucceedInTime"] intValue];
-			if (succeed == 0) {
+			if (succeed == 0 && !failed) {
 				NSLog(@"AutoRetry: request timed out");
 				[operation cancel];
 				NSMutableDictionary *errorDict = [NSMutableDictionary new];
