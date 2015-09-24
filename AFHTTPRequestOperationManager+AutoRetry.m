@@ -89,7 +89,7 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
     NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary:self.operationsDict];
     newDict[request] = operationDict;
     self.operationsDict = newDict;
-    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request
+    __block AFHTTPRequestOperation *newOperation = [self HTTPRequestOperationWithRequest:request
                                                                       success:^(AFHTTPRequestOperation *operation, id responseObj) {
                                                                           NSMutableDictionary *successOperationDict = self.operationsDict[request];
 																		  int succeed  = [successOperationDict[@"operationSucceedInTime"] intValue];
@@ -105,7 +105,9 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
 																		  }
 																	  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 																		  failed = YES;
-																		  retryBlock(operation, error);
+																		  if ([error code] != -999) { //Operation Cancellation error
+																			  retryBlock(operation, error);
+																		  }
 																	  }];
 	if (timeOutInSeconds > 0) {
 		dispatch_time_t timeOut = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (timeOutInSeconds * NSEC_PER_SEC));
@@ -113,15 +115,15 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
 			int succeed  = [operationDict[@"operationSucceedInTime"] intValue];
 			if (succeed == 0 && !failed) {
 				NSLog(@"AutoRetry: request timed out");
-				[operation cancel];
+				[newOperation cancel];
 				NSMutableDictionary *errorDict = [NSMutableDictionary new];
 				errorDict[NSLocalizedDescriptionKey] = @"Request timed out";
 				NSError *timeOutError = [NSError errorWithDomain:@"AFHTTPRequestTimeOut" code:99 userInfo:errorDict];
-				retryBlock(operation, timeOutError);
+				retryBlock(newOperation, timeOutError);
 			}
 		});
 	}
-    return operation;
+    return newOperation;
 }
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString parameters:(NSDictionary *)parameters success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure autoRetry:(int)timesToRetry {
