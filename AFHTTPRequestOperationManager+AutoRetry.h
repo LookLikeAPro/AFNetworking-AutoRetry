@@ -16,7 +16,7 @@ typedef int (^RetryDelayCalcBlock)(int, int, int); // int totalRetriesAllowed, i
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                                                 autoRetryOf:(int)retriesRemaining
                                               retryInterval:(int)intervalInSeconds
-													timeOut:(int)timeOutInSeconds;
+                                                    timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
@@ -28,62 +28,62 @@ typedef int (^RetryDelayCalcBlock)(int, int, int); // int totalRetriesAllowed, i
                      parameters:(NSDictionary *)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-					  autoRetry:(int)timesToRetry;
+                      autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-					   autoRetry:(int)timesToRetry;
+                       autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
        constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-					   autoRetry:(int)timesToRetry;
+                       autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)PUT:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-					  autoRetry:(int)timesToRetry;
+                      autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
                        parameters:(NSDictionary *)parameters
                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-						autoRetry:(int)timesToRetry;
+                        autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
                         parameters:(NSDictionary *)parameters
                            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-						 autoRetry:(int)timesToRetry;
+                         autoRetry:(int)timesToRetry;
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                        autoRetry:(int)timesToRetry
-				   retryInterval:(int)intervalInSeconds
-						 timeOut:(int)timeOutInSeconds;
+                   retryInterval:(int)intervalInSeconds
+                         timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                       autoRetry:(int)timesToRetry
-				  retryInterval:(int)intervalInSeconds
-						timeOut:(int)timeOutInSeconds;
+                  retryInterval:(int)intervalInSeconds
+                        timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)HEAD:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
                          success:(void (^)(AFHTTPRequestOperation *operation))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                        autoRetry:(int)timesToRetry
-				   retryInterval:(int)intervalInSeconds
-						 timeOut:(int)timeOutInSeconds;
+                   retryInterval:(int)intervalInSeconds
+                         timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)POST:(NSString *)URLString
                       parameters:(NSDictionary *)parameters
@@ -91,32 +91,32 @@ typedef int (^RetryDelayCalcBlock)(int, int, int); // int totalRetriesAllowed, i
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                        autoRetry:(int)timesToRetry
-				   retryInterval:(int)intervalInSeconds
-						 timeOut:(int)timeOutInSeconds;
+                   retryInterval:(int)intervalInSeconds
+                         timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)PUT:(NSString *)URLString
                      parameters:(NSDictionary *)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                       autoRetry:(int)timesToRetry
-				  retryInterval:(int)intervalInSeconds
-						timeOut:(int)timeOutInSeconds;
+                  retryInterval:(int)intervalInSeconds
+                        timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)PATCH:(NSString *)URLString
                        parameters:(NSDictionary *)parameters
                           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                         autoRetry:(int)timesToRetry
-					retryInterval:(int)intervalInSeconds
-						  timeOut:(int)timeOutInSeconds;
+                    retryInterval:(int)intervalInSeconds
+                          timeOut:(int)timeOutInSeconds;
 
 - (AFHTTPRequestOperation *)DELETE:(NSString *)URLString
                         parameters:(NSDictionary *)parameters
                            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
                          autoRetry:(int)timesToRetry
-					 retryInterval:(int)intervalInSeconds
-						   timeOut:(int)timeOutInSeconds;
+                     retryInterval:(int)intervalInSeconds
+                           timeOut:(int)timeOutInSeconds;
 
 @property (strong) id operationsDict;
 @property (copy) id retryDelayCalcBlock;
