@@ -38,6 +38,69 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
     return self.__operationsDict;
 }
 
+- (BOOL)isErrorFatal:(NSError *)error {
+    switch (error.code) {
+        case kCFHostErrorHostNotFound:
+        case kCFHostErrorUnknown: // Query the kCFGetAddrInfoFailureKey to get the value returned from getaddrinfo; lookup in netdb.h
+            // HTTP errors
+        case kCFErrorHTTPAuthenticationTypeUnsupported:
+        case kCFErrorHTTPBadCredentials:
+        case kCFErrorHTTPParseFailure:
+        case kCFErrorHTTPRedirectionLoopDetected:
+        case kCFErrorHTTPBadURL:
+        case kCFErrorHTTPBadProxyCredentials:
+        case kCFErrorPACFileError:
+        case kCFErrorPACFileAuth:
+        case kCFStreamErrorHTTPSProxyFailureUnexpectedResponseToCONNECTMethod:
+            // Error codes for CFURLConnection and CFURLProtocol
+        case kCFURLErrorUnknown:
+        case kCFURLErrorCancelled:
+        case kCFURLErrorBadURL:
+        case kCFURLErrorUnsupportedURL:
+        case kCFURLErrorHTTPTooManyRedirects:
+        case kCFURLErrorBadServerResponse:
+        case kCFURLErrorUserCancelledAuthentication:
+        case kCFURLErrorUserAuthenticationRequired:
+        case kCFURLErrorZeroByteResource:
+        case kCFURLErrorCannotDecodeRawData:
+        case kCFURLErrorCannotDecodeContentData:
+        case kCFURLErrorCannotParseResponse:
+        case kCFURLErrorInternationalRoamingOff:
+        case kCFURLErrorCallIsActive:
+        case kCFURLErrorDataNotAllowed:
+        case kCFURLErrorRequestBodyStreamExhausted:
+        case kCFURLErrorFileDoesNotExist:
+        case kCFURLErrorFileIsDirectory:
+        case kCFURLErrorNoPermissionsToReadFile:
+        case kCFURLErrorDataLengthExceedsMaximum:
+            // SSL errors
+        case kCFURLErrorServerCertificateHasBadDate:
+        case kCFURLErrorServerCertificateUntrusted:
+        case kCFURLErrorServerCertificateHasUnknownRoot:
+        case kCFURLErrorServerCertificateNotYetValid:
+        case kCFURLErrorClientCertificateRejected:
+        case kCFURLErrorClientCertificateRequired:
+        case kCFURLErrorCannotLoadFromNetwork:
+            // Cookie errors
+        case kCFHTTPCookieCannotParseCookieFile:
+            // Errors originating from CFNetServices
+        case kCFNetServiceErrorUnknown:
+        case kCFNetServiceErrorCollision:
+        case kCFNetServiceErrorNotFound:
+        case kCFNetServiceErrorInProgress:
+        case kCFNetServiceErrorBadArgument:
+        case kCFNetServiceErrorCancel:
+        case kCFNetServiceErrorInvalid:
+            // Special case
+        case 101: // null address
+        case 102: // Ignore "Frame Load Interrupted" errors. Seen after app store links.
+            return YES;
+        default:
+            break;
+    }
+    return NO;
+}
+
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)request
                                                     success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                                                     failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
@@ -106,7 +169,10 @@ SYNTHESIZE_ASC_OBJ(__retryDelayCalcBlock, setRetryDelayCalcBlock);
           }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
           failed = YES;
-          if ([error code] != -999) { //Operation Cancellation error
+          if ([self isErrorFatal:error]) {
+            NSLog(@"AutoRetry: stopping because error: %@", error.localizedDescription);
+          }
+          if ([error code] != -999 && ![self isErrorFatal:error]) { //Operation Cancellation error
               retryBlock(operation, error);
           }
         }];
